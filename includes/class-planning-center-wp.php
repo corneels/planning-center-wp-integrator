@@ -5,10 +5,6 @@
 */
 class Planning_Center_WP {
 	
-	/**
-	 * Kick it off
-	 * 
-	 */
 	public function run() {
 
 		self::setup_constants();
@@ -37,14 +33,14 @@ class Planning_Center_WP {
 	 * Setup plugin constants.
 	 *
 	 * @access private
-	 * @since 1.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	private function setup_constants() {
 
 		// Plugin version.
 		if ( ! defined( 'PLANNING_CENTER_WP_VERSION' ) ) {
-			define( 'PLANNING_CENTER_WP_VERSION', '1.0.0' );
+			define( 'PLANNING_CENTER_WP_VERSION', '0.1.0' );
 		}
 
 		// Plugin Folder Path.
@@ -68,7 +64,7 @@ class Planning_Center_WP {
 	 * Include required files.
 	 *
 	 * @access private
-	 * @since 1.0
+	 * @since 0.1.0
 	 * @return void
 	 */
 	private function includes() {
