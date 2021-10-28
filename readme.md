@@ -44,6 +44,14 @@ Create an issue on the GitHub repo and I'll see what I can do.
 
 ## Changelog
 
+## [Unreleased]
+
+## [0.1.1] - 2021-10-28
+
+### Added
+
+- Added user editable variables to settings page, including scripture reference prefix and refresh interval.
+
 ## [0.1.0] - 2021-10-28
 
 ### Added
@@ -51,3 +59,7 @@ Create an issue on the GitHub repo and I'll see what I can do.
 - Forked from [greenhornet79](https://github.com/greenhornet79/planning-center-wp) and added a number of shortcodes and functions to the plugin
 
 - Updated Changelog format
+
+[unreleased]: https://github.com/corneels/planning-center-wp-integrator/compare/v0.1.0...HEAD
+[0.1.1]: https://github.com/corneels/planning-center-wp-integrator/compare/v0.1.0...v0.1.1
+[0.1.0]: https://github.com/corneels/planning-center-wp-integrator/releases/tag/v0.1.0
