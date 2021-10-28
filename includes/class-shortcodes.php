@@ -7,10 +7,10 @@ class Planning_Center_WP_Shortcodes {
 	
 	function __construct()	{
 		
-		add_shortcode( 'pcwp_checkins', array( $this, 'checkins' ) );
-		add_shortcode( 'pcwp_giving', array( $this, 'giving' ) );
-		add_shortcode( 'pcwp_people', array( $this, 'people' ) );
-		add_shortcode( 'pcwp_services', array( $this, 'services' ) );
+		// add_shortcode( 'pcwp_checkins', array( $this, 'checkins' ) );
+		// add_shortcode( 'pcwp_giving', array( $this, 'giving' ) );
+		// add_shortcode( 'pcwp_people', array( $this, 'people' ) );
+		// add_shortcode( 'pcwp_services', array( $this, 'services' ) );
 		add_shortcode( 'pcwp_upcoming_services', array( $this, 'upcoming_services' ) );
 		add_shortcode( 'pcwp_upcoming_service_details', array( $this, 'upcoming_service_details' ) );
 
