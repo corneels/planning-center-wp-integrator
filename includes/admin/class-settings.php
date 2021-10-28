@@ -36,7 +36,7 @@ class Planning_Center_WP_Settings {
 		?>
 
 		<div class="wrap">
-			<h1>Planning Center WordPress Intergrator</h1>
+			<h1>Planning Center WordPress Integrator</h1>
 
 			<?php if ( !$options['app_id'] || !$options['secret'] ) {
 				?>

@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Planning Center WordPress Integrator
-Plugin URI: https://github.com/corneels/planning-center-wp
+Plugin URI: https://github.com/corneels/planning-center-wp-integrator
 Description: Connect with your Planning Center account and display information
 Author: Corneels de Waard
 Version: 0.1.0
@@ -11,6 +11,7 @@ Domain Path: /languages/
 */
 
 // Copyright (c) 2017 Endo Creative. All rights reserved.
+// Copyright (c) 2021 Corneels de Waard. All rights reserved.
 //
 // Released under the GPL license
 // http://www.opensource.org/licenses/gpl-license.php

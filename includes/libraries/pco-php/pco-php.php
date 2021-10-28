@@ -121,7 +121,7 @@ class PCO_PHP_API {
 					$reference = substr($item_title, $prefix_length);
 				}
 			}
-			if ( $reference === '[insert]' ) {
+			if ( $reference === ' [insert]' ) {
 				$reference = '';
 			}
 			set_transient( 'scripture', $reference, $this->transient_time );
