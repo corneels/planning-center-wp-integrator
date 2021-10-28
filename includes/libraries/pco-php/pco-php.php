@@ -19,7 +19,7 @@ class PCO_PHP_API {
 		$this->app_id = $options['app_id'];
 		$this->secret = $options['secret'];
 		$this->number_of_services = 3;
-		$this->transient_time = $options['refresh_interval'];
+		$this->transient_time = $options['refresh_interval'] + 5; // add 5 seconds so that if 0 is specified, no unusual behaviour will occur.
 		$this->speaker_position_name = 'Preacher';
 		$this->backup_artwork_url = $options['backup_artwork_url'];
 		$this->scripture_prefix = $options['scripture_prefix'];
@@ -77,7 +77,7 @@ class PCO_PHP_API {
 			// PLAN ID
 			$plan = $results[0];
 			$plan_id = $plan->id;
-			set_transient( 'plan_id',  $plan_id, $this->transient_time - 10);
+			set_transient( 'plan_id',  $plan_id, $this->transient_time - 5);
 
 			// SERVICE TIME
 			$dttm = $plan->attributes->sort_date;
