@@ -1,6 +1,8 @@
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/corneels)
+
 # Planning Center WP Integrator
 
-Contributors: endocreative, corneels
+Contributors: [corneels](https://github.com/corneels/)
 
 License: GPLv2 or later
 
