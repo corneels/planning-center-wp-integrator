@@ -36,7 +36,7 @@ class Planning_Center_WP_Settings {
 		?>
 
 		<div class="wrap">
-			<h1>Planning Center WP</h1>
+			<h1>Planning Center WordPress Intergrator</h1>
 
 			<?php if ( !$options['app_id'] || !$options['secret'] ) {
 				?>
@@ -69,15 +69,15 @@ class Planning_Center_WP_Settings {
 				<?php wp_nonce_field('submit_planning_center_wp_options', 'planning_center_wp_nonce' ); ?>
 			</table>
 
-			<input id="submit" class="button button-primary" name="submit" value="Save Changes" type="submit">
+			<input id="submit" class="button button-primary" name="submit" value="Save" type="submit">
 
 			</form>
 
-			<div class="container">
+			<!-- <div class="container">
 				<p><strong>Available shortcodes</strong></p>
-				<p>[pcwp_people method="people"]</p>p>
+				<p>[pcwp_people method="people"]</p>
 				<p>[pcwp_services method="songs"]</p>
-			</div>
+			</div> -->
 			
 		</div>
 		<?php 
