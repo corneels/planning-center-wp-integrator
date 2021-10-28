@@ -51,3 +51,7 @@ Create an issue on the GitHub repo and I'll see what I can do.
 - Forked from [greenhornet79](https://github.com/greenhornet79/planning-center-wp) and added a number of shortcodes and functions to the plugin
 
 - Updated Changelog format
+
+
+[0.1.1]: https://github.com/corneels/planning-center-wp-integrator/compare/v0.1.0...v0.1.1
+[0.1.0]: https://github.com/corneels/planning-center-wp-integrator/releases/tag/v0.1.0
