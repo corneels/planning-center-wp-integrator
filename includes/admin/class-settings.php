@@ -65,6 +65,14 @@ class Planning_Center_WP_Settings {
 						<input type="text" value="<?php echo $options['secret']; ?>" name="planning_center_wp[secret]" class="regular-text">
 					</td>
 				</tr>
+				<tr>
+					<th>
+						<label for="refresh_interval">Refresh interval</label>
+					</th>
+					<td>
+						<input type="text" value="<?php echo $options['refresh_interval']; ?>" name="planning_center_wp[refresh_interval]" class="regular-text">
+					</td>
+				</tr>
 
 				<?php wp_nonce_field('submit_planning_center_wp_options', 'planning_center_wp_nonce' ); ?>
 			</table>

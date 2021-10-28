@@ -19,7 +19,7 @@ class PCO_PHP_API {
 		$this->app_id = $options['app_id'];
 		$this->secret = $options['secret'];
 		$this->number_of_services = 3;
-		$this->transient_time = 10*60;
+		$this->transient_time = $options['refresh_interval'];
 		$this->speaker_position_name = 'Preacher';
 		$this->backup_artwork_url = 'https://wishart.church/wp-content/uploads/2021/10/IMG_7348-scaled.jpg';
 		$this->scripture_prefix = 'Scripture Reading: ';
@@ -59,7 +59,6 @@ class PCO_PHP_API {
 	{
 		$method = $args['method'];
 		if ( false === ( $plan_id = get_transient( 'plan_id' ) ) ) {
-			// echo 'fetching new,';
 			$services = new PCO_PHP_Services($args);
 			$url = $services->upcoming_services(1);
 			$response = wp_remote_get( $url, $this->get_headers() );
@@ -146,7 +145,6 @@ class PCO_PHP_API {
 			// set_transient( 'speaker', $speaker, $this->transient_time );
 
 		} else {
-			// echo 'cached,';
 			$time = get_transient( 'time' );
 			$title = get_transient( 'title' );
 			$series = get_transient( 'series' );
@@ -180,31 +178,6 @@ class PCO_PHP_API {
 		return $result;
 
 	}
-
-
-
-	// public function get_scripture_reference ( $plan_id, $services)
-	// {
-	// 	$url = $services->plan_items($plan_id);
-	// 	$response = wp_remote_get( $url, $this->get_headers() );
-
-	// 	if( is_array($response) ) {
-	// 		$body = json_decode( $response['body'] );
-	// 		if ( isset( $body->errors[0]->detail ) ) {
-	// 			$results = $body->errors[0]->detail;
-	// 		} else {
-	// 			$results = apply_filters( 'planning_center_wp_get_team_members_body', $body->data, $body );
-	// 		}
-	// 	}
-	// 	$scripture_prefix = 'Scripture Reading: ';
-	// 	$result = '';
-	// 	foreach( $results as $plan_item ) {
-	// 		if ( str_contains( $plan_item->attributes->title , $scripture_prefix ) ) {
-	// 			$result = substr($plan_item->attributes->title, strlen($scripture_prefix));
-	// 		}
-	// 	}
-	// 	return $result;
-	// }
 
 	public function get_upcoming_services( $args = '' )
 	{
