@@ -73,6 +73,22 @@ class Planning_Center_WP_Settings {
 						<input type="text" value="<?php echo $options['refresh_interval']; ?>" name="planning_center_wp[refresh_interval]" class="regular-text">
 					</td>
 				</tr>
+				<tr>
+					<th>
+						<label for="scripture_prefix">Scripture reference prefix</label>
+					</th>
+					<td>
+						<input type="text" value="<?php echo $options['scripture_prefix']; ?>" name="planning_center_wp[scripture_prefix]" class="regular-text">
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<label for="backup_artwork_url">Backup artwork URL</label>
+					</th>
+					<td>
+						<input type="text" value="<?php echo $options['backup_artwork_url']; ?>" name="planning_center_wp[backup_artwork_url]" class="regular-text">
+					</td>
+				</tr>
 
 				<?php wp_nonce_field('submit_planning_center_wp_options', 'planning_center_wp_nonce' ); ?>
 			</table>
@@ -109,6 +125,18 @@ class Planning_Center_WP_Settings {
 
 		if ( isset( $_POST['planning_center_wp']['secret'] ) ) {
 			$options['secret'] = sanitize_text_field( $_POST['planning_center_wp']['secret'] );
+		}
+
+		if ( isset( $_POST['planning_center_wp']['refresh_interval'] ) ) {
+			$options['refresh_interval'] = sanitize_text_field( $_POST['planning_center_wp']['refresh_interval'] );
+		}
+
+		if ( isset( $_POST['planning_center_wp']['scripture_prefix'] ) ) {
+			$options['scripture_prefix'] = sanitize_text_field( $_POST['planning_center_wp']['scripture_prefix'] );
+		}
+
+		if ( isset( $_POST['planning_center_wp']['backup_artwork_url'] ) ) {
+			$options['backup_artwork_url'] = sanitize_text_field( $_POST['planning_center_wp']['backup_artwork_url'] );
 		}
 
 		update_option( 'planning_center_wp', $options );

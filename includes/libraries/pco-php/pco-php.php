@@ -21,8 +21,8 @@ class PCO_PHP_API {
 		$this->number_of_services = 3;
 		$this->transient_time = $options['refresh_interval'];
 		$this->speaker_position_name = 'Preacher';
-		$this->backup_artwork_url = 'https://wishart.church/wp-content/uploads/2021/10/IMG_7348-scaled.jpg';
-		$this->scripture_prefix = 'Scripture Reading: ';
+		$this->backup_artwork_url = $options['backup_artwork_url'];
+		$this->scripture_prefix = $options['scripture_prefix'];
 
 	}
 	
