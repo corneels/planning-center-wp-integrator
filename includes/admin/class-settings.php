@@ -67,7 +67,7 @@ class Planning_Center_WP_Settings {
 				</tr>
 				<tr>
 					<th>
-						<label for="refresh_interval">Refresh interval</label>
+						<label for="refresh_interval">Refresh interval (integer in seconds)</label>
 					</th>
 					<td>
 						<input type="text" value="<?php echo $options['refresh_interval']; ?>" name="planning_center_wp[refresh_interval]" class="regular-text">
