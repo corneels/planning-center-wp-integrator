@@ -1,12 +1,12 @@
 <?php
 /*
-Plugin Name: Planning Center WP
-Plugin URI: http://www.endocreative.com
+Plugin Name: Planning Center WordPress Integrator
+Plugin URI: https://github.com/corneels/planning-center-wp
 Description: Connect with your Planning Center account and display information
-Author: Endo Creative
-Version: 1.0.0
-Author URI: http://www.endocreative.com
-Text Domain: planning-center-wp
+Author: Corneels de Waard
+Version: 0.1.0
+Author URI: https://github.com/corneels
+Text Domain: planning-center-wp-integrator
 Domain Path: /languages/
 */
 
@@ -40,7 +40,7 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-planning-center-wp.php';
  * then kicking off the plugin from this point in the file does
  * not affect the page life cycle.
  *
- * @since    1.0.0
+ * @since    0.1.0
  */
 function run_planning_center_wp() {
 	$plugin = new Planning_Center_WP();
