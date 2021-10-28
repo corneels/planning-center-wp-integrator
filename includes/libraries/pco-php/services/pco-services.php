@@ -35,6 +35,20 @@ class PCO_PHP_Services {
 		return 'https://api.planningcenteronline.com/services/v2/songs';	
 	}
 
+	public function upcoming_services( $number_of_services )
+	{
+		return "https://api.planningcenteronline.com/services/v2/service_types/1035558/plans?filter=future&order=sort_date&include=series&per_page=$number_of_services";
+	}
+
+	public function team_members( $plan_id )
+	{
+		return "https://api.planningcenteronline.com/services/v2/service_types/1035558/plans/$plan_id/team_members?include=person";
+	}
+
+	public function plan_items( $plan_id )
+	{
+		return "https://api.planningcenteronline.com/services/v2/service_types/1035558/plans/$plan_id/items/";
+	}
 
 
 	public function format_parameters( $parameters ) 
