@@ -135,7 +135,7 @@ class PCO_PHP_API
 			file_put_contents($file, $image_data);
 
 			$wp_filetype = wp_check_filetype($filename, null);
-			$series_art = '<img src="' . $file_url . '" style="width: 50%; max-width: 800px;">';
+			$series_art = $file_url;
 			set_transient('series_art', $series_art, $this->transient_time);
 
 			// SCRIPTURE READING
