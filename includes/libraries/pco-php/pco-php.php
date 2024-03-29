@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 /**
 * Load the base class for the PCO PHP API
@@ -6,14 +6,39 @@
 
 */
 
+// Define a function to modify the upload directory settings
+function modify_upload_dir($upload)
+{
+	$upload['subdir'] = ''; // Set subdir to empty to prevent organizing into year and month folders
+	$upload['path'] = $upload['basedir'] . $upload['subdir'];
+	$upload['url'] = $upload['baseurl'] . $upload['subdir'];
+	return $upload;
+}
 
-class PCO_PHP_API {
-	
+// function display_scripture_reading_shortcode($atts) {
+// 	$atts = shortcode_atts(array(
+// 		'name' => 'scripture_reading', // Default transient name
+// 	), $atts);
+
+// 	$transient_value = get_transient($atts['name']);
+
+// 	// Check if exists
+// 	if ($transient_value === false) {
+// 		// Transient exists
+// 		return $transient_value;
+// 	} else {
+// 		// Does not exist or has expired
+// 		return 'Scripture reading not available.';
+
+class PCO_PHP_API
+{
+
 	protected $app_id;
 	protected $secret;
 
-	function __construct()	{
-		
+	function __construct()
+	{
+
 		$options = get_option('planning_center_wp');
 
 		$this->app_id = $options['app_id'];
@@ -25,29 +50,29 @@ class PCO_PHP_API {
 		$this->scripture_prefix = $options['scripture_prefix'];
 
 	}
-	
-	
 
-	public function get_people( $args = '') 
-	{	
+
+
+	public function get_people($args = '')
+	{
 
 		$method = $args['method'];
 
 		$people = new PCO_PHP_People($args);
 		$url = $people->$method();
 
-		$response = wp_remote_get( $url, $this->get_headers() );
+		$response = wp_remote_get($url, $this->get_headers());
 		$result = '';
 
-		if( is_array($response) ) {
-		  $header = $response['headers']; // array of http header lines
-		  $body = json_decode( $response['body'] ); // use the content
+		if (is_array($response)) {
+			$header = $response['headers']; // array of http header lines
+			$body = json_decode($response['body']); // use the content
 
-		  if ( isset( $body->errors[0]->detail ) ) {
-		  	$result = $body->errors[0]->detail;
-		  } else {
-		  	$result = apply_filters( 'planning_center_wp_get_people_body', $body->data, $body );
-		  }
+			if (isset($body->errors[0]->detail)) {
+				$result = $body->errors[0]->detail;
+			} else {
+				$result = apply_filters('planning_center_wp_get_people_body', $body->data, $body);
+			}
 
 		}
 
@@ -55,76 +80,88 @@ class PCO_PHP_API {
 
 	}
 
-	public function get_upcoming_service_details ( $args = '' )
+	public function get_upcoming_service_details($args = '')
 	{
 		$method = $args['method'];
-		if ( false === ( $plan_id = get_transient( 'plan_id' ) ) ) {
+		if (false === ($plan_id = get_transient('plan_id'))) {
 			$services = new PCO_PHP_Services($args);
 			$url = $services->upcoming_services(1);
-			$response = wp_remote_get( $url, $this->get_headers() );
-			
-			if( is_array($response) ) {
+			$response = wp_remote_get($url, $this->get_headers());
+
+			if (is_array($response)) {
 				$header = $response['headers'];
-				$body = json_decode( $response['body'] );
-				if ( isset( $body->errors[0]->detail ) ) {
+				$body = json_decode($response['body']);
+				if (isset($body->errors[0]->detail)) {
 					$results = $body->errors[0]->detail;
 				} else {
-					$results = apply_filters( 'planning_center_wp_get_upcoming_services_body', $body->data, $body );
-					$inclusions = apply_filters( 'planning_center_wp_get_upcoming_services_body', $body->included, $body );
+					$results = apply_filters('planning_center_wp_get_upcoming_services_body', $body->data, $body);
+					$inclusions = apply_filters('planning_center_wp_get_upcoming_services_body', $body->included, $body);
 				}
 			}
 
 			// PLAN ID
 			$plan = $results[0];
 			$plan_id = $plan->id;
-			set_transient( 'plan_id',  $plan_id, $this->transient_time - 5);
+			set_transient('plan_id', $plan_id, $this->transient_time - 5);
 
 			// SERVICE TIME
 			$dttm = $plan->attributes->sort_date;
 			$time = date('g:i a', strtotime($dttm));
-			set_transient( 'time',  $time, $this->transient_time );
+			set_transient('time', $time, $this->transient_time);
 
 			// SERVICE TITLE
 			$title = $plan->attributes->title;
-			set_transient( 'title',  $title, $this->transient_time );
+			set_transient('title', $title, $this->transient_time);
 
 			// SERIES TITLE
 			$series = $plan->attributes->series_title;
-			set_transient( 'series',  $series, $this->transient_time );
+			set_transient('series', $series, $this->transient_time);
 
 			// SERIES ARTWORK
-			if( $plan->attributes->series_title != '' ) {
+			if ($plan->attributes->series_title != '') {
 				$artwork_url = $inclusions[0]->attributes->artwork_original;
 			} else {
 				$artwork_url = $this->backup_artwork_url;
 			}
-			$series_art = '<img src="' . $artwork_url . '">';
-			set_transient( 'series_art', $series_art, $this->transient_time );
+
+			$image_data = file_get_contents($artwork_url);
+			add_filter('upload_dir', 'modify_upload_dir');
+
+			$upload_dir = wp_upload_dir();
+			$upload_dir['subdir'] = '';
+			$filename = 'series-art.png';
+			$file = $upload_dir['path'] . '/' . $filename;
+			$file_url = $upload_dir['url'] . '/' . $filename;
+			file_put_contents($file, $image_data);
+
+			$wp_filetype = wp_check_filetype($filename, null);
+			$series_art = '<img src="' . $file_url . '" style="width: 50%; max-width: 800px;">';
+			set_transient('series_art', $series_art, $this->transient_time);
 
 			// SCRIPTURE READING
 			$url = $services->plan_items($plan_id);
-			$plan_items = wp_remote_get( $url, $this->get_headers() );
+			$plan_items = wp_remote_get($url, $this->get_headers());
 
-			if( is_array($plan_items) ) {
-				$body = json_decode( $plan_items['body'] );
-				if ( isset( $body->errors[0]->detail ) ) {
+			if (is_array($plan_items)) {
+				$body = json_decode($plan_items['body']);
+				if (isset($body->errors[0]->detail)) {
 					$results = $body->errors[0]->detail;
 				} else {
-					$results = apply_filters( 'planning_center_wp_get_team_members_body', $body->data, $body );
+					$results = apply_filters('planning_center_wp_get_team_members_body', $body->data, $body);
 				}
 			}
 			$scripture_prefix = $this->scripture_prefix;
-			foreach( $results as $plan_item ) {
+			foreach ($results as $plan_item) {
 				$item_title = $plan_item->attributes->title;
 				$prefix_length = strlen($scripture_prefix);
-				if ( substr($item_title, 0, $prefix_length) === $scripture_prefix ) {
-					$reference = substr($item_title, $prefix_length);
+				if (substr($item_title, 0, $prefix_length) === $scripture_prefix) {
+					$scripture = substr($item_title, $prefix_length);
 				}
 			}
-			if ( $reference === ' [insert]' ) {
-				$reference = '';
+			if ($scripture === ' [insert]') {
+				$scripture = '';
 			}
-			set_transient( 'scripture', $reference, $this->transient_time );
+			set_transient('scripture', $scripture, $this->transient_time);
 
 			// // SPEAKER
 			// $url = $services->team_members($plan_id);
@@ -145,15 +182,15 @@ class PCO_PHP_API {
 			// set_transient( 'speaker', $speaker, $this->transient_time );
 
 		} else {
-			$time = get_transient( 'time' );
-			$title = get_transient( 'title' );
-			$series = get_transient( 'series' );
-			$series_art = get_transient( 'series_art' );
-			$scripture = get_transient( 'scripture' );
+			$time = get_transient('time');
+			$title = get_transient('title');
+			$series = get_transient('series');
+			$series_art = get_transient('series_art');
+			$scripture = get_transient('scripture');
 			// $speaker = get_transient( 'speaker' );
 		}
 		$result = '';
-		switch( $method ) {
+		switch ($method) {
 			case 'time':
 				$result = $time;
 				break;
@@ -174,12 +211,13 @@ class PCO_PHP_API {
 				break;
 			default:
 				$result = "Invalid method provided. Valid methods are time, speaker, title, series_art, series_name, date, scripture.";
-			}
+		}
+		error_log('brughhhh');
 		return $result;
 
 	}
 
-	public function get_upcoming_services( $args = '' )
+	public function get_upcoming_services($args = '')
 	{
 
 		$upcoming_plans = array();
@@ -195,31 +233,31 @@ class PCO_PHP_API {
 		$method = $args['method'];
 		$services = new PCO_PHP_Services($args);
 		$url = $services->upcoming_services(1);
-		$response = wp_remote_get( $url, $this->get_headers() );
+		$response = wp_remote_get($url, $this->get_headers());
 		$upcoming_services = '';
-		
-		
-		if( is_array($response) ) {
+
+
+		if (is_array($response)) {
 			$header = $response['headers']; // array of http header lines
-			$body = json_decode( $response['body'] ); // use the content
-			if ( isset( $body->errors[0]->detail ) ) {
+			$body = json_decode($response['body']); // use the content
+			if (isset($body->errors[0]->detail)) {
 				$results = $body->errors[0]->detail;
 			} else {
-				$results = apply_filters( 'planning_center_wp_get_upcoming_services_body', $body->data, $body );
-				$inclusions = apply_filters( 'planning_center_wp_get_upcoming_services_body', $body->included, $body );
+				$results = apply_filters('planning_center_wp_get_upcoming_services_body', $body->data, $body);
+				$inclusions = apply_filters('planning_center_wp_get_upcoming_services_body', $body->included, $body);
 			}
 		}
 
-		foreach( $results as $result ) {
+		foreach ($results as $result) {
 			$plan_id = $result->id;
 			$upcoming_plans[] = $plan_id;
 			$upcoming_dates[] = $result->attributes->dates;
 			$upcoming_times[] = $result->attributes->sort_date;
 			$upcoming_titles[] = $result->attributes->title;
 			$upcoming_series[] = $result->attributes->series_title;
-			if( $result->attributes->series_title != '' ) {
-				foreach( $inclusions as $inclusion ) {
-					if( $inclusion->id == $result->relationships->series->data->id ) {
+			if ($result->attributes->series_title != '') {
+				foreach ($inclusions as $inclusion) {
+					if ($inclusion->id == $result->relationships->series->data->id) {
 						$artwork_url = $inclusion->attributes->artwork_original;
 					}
 				}
@@ -230,18 +268,18 @@ class PCO_PHP_API {
 
 			// Get speaker name
 			$url = $services->team_members($plan_id);
-			$response = wp_remote_get( $url, $this->get_headers() );
+			$response = wp_remote_get($url, $this->get_headers());
 
-			if( isarray($response) ) {
-				$body = json_decode( $response['body'] );
-				if ( isset( $body->errors[0]->detail ) ) {
+			if (isarray($response)) {
+				$body = json_decode($response['body']);
+				if (isset($body->errors[0]->detail)) {
 					$results = $body->errors[0]->detail;
 				} else {
-					$results = apply_filters( 'planning_center_wp_get_team_members_body', $body->data, $body );
+					$results = apply_filters('planning_center_wp_get_team_members_body', $body->data, $body);
 				}
 			}
 			// get speaker name
-			
+
 			// get speaker picture??
 
 			// foreach( $
@@ -257,26 +295,26 @@ class PCO_PHP_API {
 
 
 
-	public function get_services( $args = '' ) 
+	public function get_services($args = '')
 	{
-		
+
 		$method = $args['method'];
 
 		$services = new PCO_PHP_Services($args);
 		$url = $services->$method();
 
-		$response = wp_remote_get( $url, $this->get_headers() );
+		$response = wp_remote_get($url, $this->get_headers());
 		$result = '';
 
-		if( is_array($response) ) {
-		  $header = $response['headers']; // array of http header lines
-		  $body = json_decode( $response['body'] ); // use the content
+		if (is_array($response)) {
+			$header = $response['headers']; // array of http header lines
+			$body = json_decode($response['body']); // use the content
 
-		  if ( isset( $body->errors[0]->detail ) ) {
-		  	$result = $body->errors[0]->detail;
-		  } else {
-		  	$result = apply_filters( 'planning_center_wp_get_services_body', $body->data, $body );
-		  }
+			if (isset($body->errors[0]->detail)) {
+				$result = $body->errors[0]->detail;
+			} else {
+				$result = apply_filters('planning_center_wp_get_services_body', $body->data, $body);
+			}
 
 		}
 
@@ -284,20 +322,20 @@ class PCO_PHP_API {
 
 	}
 
-	public function get_donations() 
+	public function get_donations()
 	{
-		
-		$response = wp_remote_get( 'https://api.planningcenteronline.com/giving/v2/donations', $this->get_headers() );
 
-		if( is_array($response) ) {
-		  $header = $response['headers']; // array of http header lines
-		  $body = json_decode( $response['body'] ); // use the content
+		$response = wp_remote_get('https://api.planningcenteronline.com/giving/v2/donations', $this->get_headers());
 
-		  echo '<pre>';
-		  print_r( $body );
-		  echo '</pre>';
+		if (is_array($response)) {
+			$header = $response['headers']; // array of http header lines
+			$body = json_decode($response['body']); // use the content
 
-		  $donations = $body->data;
+			echo '<pre>';
+			print_r($body);
+			echo '</pre>';
+
+			$donations = $body->data;
 
 		} else {
 			$donations = 'Could not be found.';
@@ -307,12 +345,12 @@ class PCO_PHP_API {
 
 	}
 
-	public function get_headers() 
+	public function get_headers()
 	{
 		return array(
-		  'headers' => array(
-		    'Authorization' => 'Basic ' . base64_encode( $this->app_id . ':' . $this->secret )
-		  )
+			'headers' => array(
+				'Authorization' => 'Basic ' . base64_encode($this->app_id . ':' . $this->secret)
+			)
 		);
 	}
 
