@@ -64,6 +64,11 @@ function planning_center_cron()
 function pcwp_plugin_deactivation()
 {
 	wp_clear_scheduled_hook('planning_center_cron');
+	delete_transient('time');
+	delete_transient('title');
+	delete_transient('series');
+	delete_transient('series_art');
+	delete_transient('scripture');
 }
 
 function pwcp_plugin_activation()
