@@ -120,22 +120,21 @@ class PCO_PHP_API
 			// SERIES ARTWORK
 			if ($plan->attributes->series_title != '') {
 				$artwork_url = $inclusions[0]->attributes->artwork_original;
+				$image_data = file_get_contents($artwork_url);
+				add_filter('upload_dir', 'modify_upload_dir');
+
+				$upload_dir = wp_upload_dir();
+				$upload_dir['subdir'] = '';
+				$filename = 'series-art.png';
+				$file = $upload_dir['path'] . '/' . $filename;
+				$file_url = $upload_dir['url'] . '/' . $filename;
+				file_put_contents($file, $image_data);
+
+				$wp_filetype = wp_check_filetype($filename, null);
+				$series_art = $file_url;
 			} else {
-				$artwork_url = $this->backup_artwork_url;
+				$series_art = $this->backup_artwork_url;
 			}
-
-			$image_data = file_get_contents($artwork_url);
-			add_filter('upload_dir', 'modify_upload_dir');
-
-			$upload_dir = wp_upload_dir();
-			$upload_dir['subdir'] = '';
-			$filename = 'series-art.png';
-			$file = $upload_dir['path'] . '/' . $filename;
-			$file_url = $upload_dir['url'] . '/' . $filename;
-			file_put_contents($file, $image_data);
-
-			$wp_filetype = wp_check_filetype($filename, null);
-			$series_art = $file_url;
 			set_transient('series_art', $series_art, $this->transient_time);
 
 			// SCRIPTURE READING
