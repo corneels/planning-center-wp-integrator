@@ -33,7 +33,6 @@ if (!defined('WPINC')) {
  * admin-specific hooks, and public-facing site hooks.
  */
 require plugin_dir_path(__FILE__) . 'includes/class-planning-center-wp.php';
-require plugin_dir_path(__FILE__) . 'includes/libraries/pco-php/pco-php.php';
 /**
  * Begins execution of the plugin.
  *
@@ -48,13 +47,18 @@ function run_planning_center_wp()
 	$plugin = new Planning_Center_WP();
 	$plugin->run();
 }
+run_planning_center_wp();
 
 // Schedule the recurring task
 
 function planning_center_cron()
 {
-	$plugin = new PCO_PHP_API();
-	$plugin->get_and_store_upcoming_service_art('series_art');
+	$args = array(
+		'method' => '',
+		'parameters' => '',
+	);
+	$api_conn = new PCO_PHP_API();
+	$result = $api_conn->get_upcoming_service_details($args);
 }
 
 function pcwp_plugin_deactivation()
@@ -62,14 +66,16 @@ function pcwp_plugin_deactivation()
 	wp_clear_scheduled_hook('planning_center_cron');
 }
 
+function pwcp_plugin_activation()
+{
+	if (!wp_next_scheduled('5min_event')) {
+		wp_schedule_event(time(), '5min', '5min_event');
+	}
+	planning_center_cron();
+}
+
 register_deactivation_hook(__FILE__, 'pcwp_plugin_deactivation');
 
 register_activation_hook(__FILE__, 'pwcp_plugin_activation');
 
-function pwcp_plugin_activation()
-{
-	run_planning_center_wp();
-	if (!wp_next_scheduled('planning_center_cron')) {
-		wp_schedule_event(time(), '30min', 'planning_center_cron');
-	}
-}
+add_action('5min_event', 'planning_center_cron');
