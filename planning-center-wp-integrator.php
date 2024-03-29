@@ -69,6 +69,7 @@ function pcwp_plugin_deactivation()
 	delete_transient('series');
 	delete_transient('series_art');
 	delete_transient('scripture');
+	delete_transient('plan_id');
 }
 
 function pwcp_plugin_activation()
