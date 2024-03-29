@@ -135,7 +135,7 @@ class PCO_PHP_API
 			file_put_contents($file, $image_data);
 
 			$wp_filetype = wp_check_filetype($filename, null);
-			$series_art = '<img src="' . esc_url($file_url) . '?version=' . rand(1, 100) . '">';
+			$series_art = $file_url;
 			set_transient('series_art', $series_art, $this->transient_time);
 
 			// SCRIPTURE READING
@@ -201,7 +201,7 @@ class PCO_PHP_API
 				$result = $series;
 				break;
 			case 'series_art':
-				$result = $series_art;
+				$result = '<img src="' . esc_url($series_art) . '?version=' . rand(1, 100) . '">';
 				break;
 			// case 'speaker':
 			// 	$result = $speaker;
