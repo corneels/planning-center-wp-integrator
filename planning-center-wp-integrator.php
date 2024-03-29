@@ -24,7 +24,7 @@ Domain Path: /languages/
 
 
 // If this file is called directly, abort.
-if ( ! defined( 'WPINC' ) ) {
+if (!defined('WPINC')) {
 	die;
 }
 
@@ -32,8 +32,8 @@ if ( ! defined( 'WPINC' ) ) {
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
  */
-require plugin_dir_path( __FILE__ ) . 'includes/class-planning-center-wp.php';
-
+require plugin_dir_path(__FILE__) . 'includes/class-planning-center-wp.php';
+require plugin_dir_path(__FILE__) . 'includes/libraries/pco-php/pco-php.php';
 /**
  * Begins execution of the plugin.
  *
@@ -43,8 +43,33 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-planning-center-wp.php';
  *
  * @since    0.1.0
  */
-function run_planning_center_wp() {
+function run_planning_center_wp()
+{
 	$plugin = new Planning_Center_WP();
 	$plugin->run();
 }
-run_planning_center_wp();
+
+// Schedule the recurring task
+
+function planning_center_cron()
+{
+	$plugin = new PCO_PHP_API();
+	$plugin->get_and_store_upcoming_service_art('series_art');
+}
+
+function pcwp_plugin_deactivation()
+{
+	wp_clear_scheduled_hook('planning_center_cron');
+}
+
+register_deactivation_hook(__FILE__, 'pcwp_plugin_deactivation');
+
+register_activation_hook(__FILE__, 'pwcp_plugin_activation');
+
+function pwcp_plugin_activation()
+{
+	run_planning_center_wp();
+	if (!wp_next_scheduled('planning_center_cron')) {
+		wp_schedule_event(time(), '30min', 'planning_center_cron');
+	}
+}
