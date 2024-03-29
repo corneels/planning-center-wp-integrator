@@ -201,7 +201,7 @@ class PCO_PHP_API
 				$result = $series;
 				break;
 			case 'series_art':
-				$result = '<img src="' . esc_url($series_art) . '?version=' . rand(1, 100) . '">';
+				$result = '<img src="' . $series_art . '?version=' . rand(1, 100) . '">';
 				break;
 			// case 'speaker':
 			// 	$result = $speaker;
