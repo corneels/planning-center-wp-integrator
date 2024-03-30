@@ -54,7 +54,7 @@ run_planning_center_wp();
 function planning_center_cron()
 {
 	$args = array(
-		'method' => '',
+		'method' => 'cron',
 		'parameters' => '',
 	);
 	$api_conn = new PCO_PHP_API();

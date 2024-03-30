@@ -83,7 +83,7 @@ class PCO_PHP_API
 	public function get_upcoming_service_details($args = '')
 	{
 		$method = $args['method'];
-		if (false === ($plan_id = get_transient('plan_id'))) {
+		if (false === ($plan_id = get_transient('plan_id')) or $method == 'cron') {
 			$services = new PCO_PHP_Services($args);
 			$url = $services->upcoming_services(1);
 			$response = wp_remote_get($url, $this->get_headers());
