@@ -35,6 +35,11 @@ class PCO_PHP_API
 
 	protected $app_id;
 	protected $secret;
+	protected $number_of_services;
+	protected $transient_time;
+	protected $speaker_position_name;
+	protected $backup_artwork_url;
+	protected $scripture_prefix;
 
 	function __construct()
 	{
