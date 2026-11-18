@@ -61,9 +61,30 @@ function planning_center_cron()
 	$result = $api_conn->get_upcoming_service_details($args);
 }
 
+// Register the custom 5 minute interval. Without this, wp_schedule_event() fails
+// silently and the background refresh never runs.
+function pcwp_add_cron_interval($schedules)
+{
+	$schedules['5min'] = array(
+		'interval' => 300,
+		'display'  => 'Every 5 minutes',
+	);
+	return $schedules;
+}
+add_filter('cron_schedules', 'pcwp_add_cron_interval');
+
+// Make sure the event is scheduled even if the plugin was activated before this fix.
+function pcwp_ensure_scheduled()
+{
+	if (!wp_next_scheduled('5min_event')) {
+		wp_schedule_event(time(), '5min', '5min_event');
+	}
+}
+add_action('init', 'pcwp_ensure_scheduled');
+
 function pcwp_plugin_deactivation()
 {
-	wp_clear_scheduled_hook('planning_center_cron');
+	wp_clear_scheduled_hook('5min_event');
 	delete_transient('time');
 	delete_transient('title');
 	delete_transient('series');
@@ -74,9 +95,7 @@ function pcwp_plugin_deactivation()
 
 function pwcp_plugin_activation()
 {
-	if (!wp_next_scheduled('5min_event')) {
-		wp_schedule_event(time(), '5min', '5min_event');
-	}
+	pcwp_ensure_scheduled();
 	planning_center_cron();
 }
 
